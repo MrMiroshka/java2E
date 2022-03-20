@@ -22,7 +22,7 @@ public class Game {
      *
      * @param count - количество участников
      */
-    public void generateMembers(int count) {
+    private void generateMembers(int count) {
         members = new Members[count];
         for (int i = 0; i < count; i++) {
             switch (random.nextInt(3)) {
@@ -56,7 +56,7 @@ public class Game {
      *
      * @param count - количество припятствий
      */
-    public void generateObstacles(int count) {
+    private void generateObstacles(int count) {
         obstacles = new Obstacles[count];
         for (int i = 0; i < count; i++) {
             switch (random.nextInt(2)) {
