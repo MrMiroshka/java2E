@@ -1,0 +1,23 @@
+.jfx-text-area{
+    -fx-prompt-text-fill: WHITE;
+    -jfx-focus-color: WHITE;
+    -jfx-unfocus-color: WHITE;
+    -fx-text-inner-color: WHITE;
+}
+
+.text-area {
+    -fx-prompt-text-fill: WHITE;
+    -fx-text-inner-color: WHITE;
+    -fx-font-size: 21;
+
+}
+
+.text-area .scroll-pane {
+    -fx-hbar-policy: never;
+    -fx-vbar-policy: never;
+}
+
+.text-area .content{
+    -fx-background-color: #17212B;
+    -fx-border-color: #17212B;
+}
