@@ -66,16 +66,25 @@ public class MessageController {
      * @param keyEvent
      */
     public void editMessage(KeyEvent keyEvent) {
+        SendOrMic(keyEvent);
+        if (flagMessage){
+            if (keyEvent.getCode() == ENTER) {
+                sendMessage();
+            }
+        }
+
+
+
+    }
+
+    private void SendOrMic(KeyEvent keyEvent){
         if (!(messageField.getText() + keyEvent.getText()).isEmpty()) {
             micSend.setImage(sendImage);
             flagMessage = true;
+
         } else {
             micSend.setImage(micImage);
             flagMessage = false;
-        }
-
-        if (keyEvent.getCode() == ENTER) {
-            sendMessage();
         }
     }
 
@@ -91,9 +100,10 @@ public class MessageController {
                         .build();
 
                 MessageInOutController mioc = new MessageInOutController();
+                mioc.updateItem(msg, false);
                 mioc.setWrapText(true);
                 mioc.setMaxHeight(150);
-                mioc.updateItem(msg, false);
+
                 //размер сообщения по ширине
                 mioc.setPrefWidth(mioc.getMessageLabelSize());
 
@@ -101,6 +111,8 @@ public class MessageController {
                 messagesListView.scrollTo(messagesListView.getItems().size());
                 messagesListView.refresh();
                 messageField.clear();
+                micSend.setImage(micImage);
+                flagMessage = false;
 
             } catch (Exception e) {
                 e.printStackTrace();

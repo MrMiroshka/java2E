@@ -39,12 +39,6 @@ public class MessageInOutController extends ListCell<Message> {
         return (max>850?750:max);
     }
 
-    public MessageInOutController() {
-        this.root = new GridPane();
-        this.messageLabel = new Label();
-        this.messageTimeLabel = new Label();
-
-    }
 
     @Override
     protected void updateItem(Message item, boolean empty) {
