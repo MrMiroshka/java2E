@@ -30,6 +30,16 @@ public class ChatServer {
         }
     }
 
+    public void sendMessageToClient( String nickwhom, String message, ClientHandler sender) {
+        final ClientHandler recipient = clients.get(nickwhom);
+        if (recipient != null) {
+            recipient.sendMessage("от " + sender.getNick() + " для " + recipient.getNick()+ ": " + message);
+            sender.sendMessage("для " + nickwhom + ": " + message);
+        } else {
+            sender.sendMessage( nickwhom + " - такой килент не авторизован!");
+        }
+    }
+
     public boolean isNickBusy(String nick) {
         return clients.containsKey(nick);
     }

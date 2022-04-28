@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+
 public class ClientHandler {
     private final Socket socket;
     private final ChatServer server;
@@ -111,7 +112,13 @@ public class ClientHandler {
                 if ("/end".equals(msg)) {
                     break;
                 }
-                server.broadcast(nick + ": " + msg);
+
+                String[] words = msg.split(" ", 3);
+                if ("/w".equalsIgnoreCase(words[0]) && words.length == 3) {
+                    server.sendMessageToClient(words[1].trim(), words[2], this);
+                } else {
+                    server.broadcast(nick + ": " + msg);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -13,6 +13,8 @@ public class ChatClient {
     private DataInputStream in;
     private DataOutputStream out;
 
+
+
     private final Controller controller;
 
     public ChatClient(Controller controller) {
