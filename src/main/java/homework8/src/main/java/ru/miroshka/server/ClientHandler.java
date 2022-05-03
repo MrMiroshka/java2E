@@ -20,10 +20,12 @@ public class ClientHandler {
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
     private final AuthService authService;
+    private boolean isClose;
+    private final int timeAuthLimit;
 
     private String nick;
 
-    public ClientHandler(Socket socket, ChatServer server, AuthService authService) {
+    public ClientHandler(Socket socket, ChatServer server, AuthService authService,int timeAuthLimit) {
         try {
             this.nick = "";
             this.socket = socket;
@@ -31,9 +33,31 @@ public class ClientHandler {
             this.in = new ObjectInputStream(socket.getInputStream());
             this.out = new ObjectOutputStream(socket.getOutputStream());
             this.authService = authService;
+            this.isClose = false;
+            this.timeAuthLimit = timeAuthLimit;
 
             new Thread(() -> {
                 try {
+
+                    Thread timeThread =
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Thread.sleep(timeAuthLimit);
+                                        if ("".equals(ClientHandler.this.nick)) {
+                                            System.out.println("Вышло время для авторизации, соединение с клиентом будет прервано.");
+                                            closeConnection();
+
+                                        }
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                    timeThread.setDaemon(true);
+                    timeThread.start();
+
                     authenticate();
                     readMessages();
                 } finally {
@@ -48,35 +72,38 @@ public class ClientHandler {
     }
 
     private void closeConnection() {
-        sendMessage(EndMessage.of());
-        try {
-            if (in != null) {
-                in.close();
+
+        if (!isClose) {
+            isClose = true;
+            sendMessage(EndMessage.of());
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            if (out != null) {
-                out.close();
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            if (socket != null) {
-                server.unsubscribe(this);
-                socket.close();
+            try {
+                if (socket != null) {
+                    server.unsubscribe(this);
+                    socket.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
     private void authenticate() {
         while (true) {
             try {
-
                 final AbstractMessage message = (AbstractMessage) in.readObject();
                 if (message.getCommand() == Command.AUTH) {
                     final AuthMessage authMessage = (AuthMessage) message;

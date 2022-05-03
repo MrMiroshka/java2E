@@ -27,7 +27,7 @@ public class ChatServer {
             while (true) {
                 System.out.println("Wait client connection...");
                 final Socket socket = serverSocket.accept();
-                new ClientHandler(socket, this, authService);
+                new ClientHandler(socket, this, authService,120000);
                 System.out.println("Client connected");
             }
         } catch (IOException e) {
